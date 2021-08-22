@@ -1,0 +1,226 @@
+Table 1: SalesPeople
+
+Snum is Primary key
+
+Sname is Unique constraint
+
+Snum Sname City Comm
+
+1001 Peel. London .12
+
+1002  Serres Sanjose .13
+
+1004 Motika London .11
+
+1007 Rifkin Barcelona .15
+
+1003 Axelrod Newyork .10
+
+Answer:
+CREATE TABLE Salespeople
+(
+  snum   integer PRIMARY KEY,
+  sname CHAR(10) NOT NULL,
+  city      CHAR(10),
+  comm  decimal(10,2)
+);
+
+INSERT INTO Salespeople VALUES (1001,'Peel','London',.12);
+INSERT INTO Salespeople VALUES (1002,'Serres','Sanjose',.13);
+INSERT INTO Salespeople VALUES (1004,'Motika','London',.11);
+INSERT INTO Salespeople VALUES (1007,'rifkin','Barcelona',.15);
+INSERT INTO Salespeople VALUES (1003,'Axelrod','Newyork',.10);
+INSERT INTO Salespeople VALUES (1005,'Alrod','Newyork',.10);
+
+
+ select * from Salespeople;
+
+snum	sname	city	comm
+1001	Peel	London	0.12
+1002	Serres	Sanjose	0.13
+1003	Axelrod	Newyork	0.1
+1004	Motika	London	0.11
+1005	alrod	Newyork	0.1
+1007	Rifkin	Barcelona	0.15
+
+Table 2: Customers
+
+Cnum is Primary Key
+
+City has not null constraint .
+
+Snum is foreign key constraint refers Snum column of SalesPeople table.
+
+Cnum Cname City Snum
+
+2001  Hoffman London 1001
+
+2002  Giovanni Rome 1003
+
+2003  Liu Sanjose 1002
+
+2004  Grass Berlin 1002
+
+2006 Clemens London 1001
+
+2008 Cisneros Sanjose 1007
+
+2007 Pereira Rome 1004
+
+CREATE TABLE Customers
+(
+  cnum   integer PRIMARY KEY,
+  cname char(10) NOT NULL,
+  city      CHAR(10),
+  snum integer REFERENCES Salespeople
+); 
+
+INSERT INTO Customers VALUES (2001,'Hoffman','London',1001);
+INSERT INTO Customers VALUES (2002,'Giovanni','Rome',1003);
+INSERT INTO Customers VALUES (2003,'Liu','Sanjose',1002);
+INSERT INTO Customers VALUES (2004,'Grass','Berlin',1002);
+INSERT INTO Customers VALUES (2006,'Clemens','London',1001);
+INSERT INTO Customers VALUES (2008,'Cisneros','Sanjose',1007);
+INSERT INTO Customers VALUES (2007,'Pereira','Rome',1004);
+
+select * from Customers;
+
+cnum	cname	city	snum
+2001	Hoffman	London	1001
+2002	Giovanni	Rome	1003
+2003	Liu	Sanjose	1002
+2004	Grass	Berlin	1002
+2006	Clemens	London	1001
+2007	Pereira	Rome	1004
+2008	Cisneros	Sanjose	1007
+
+Table 3: Orders
+
+Onum is Primary key
+
+Cnum is foreign key refers to Cnum column of Customers table. Snum is foreign key refers Snum column of SalesPeople table.
+
+Onum Amt Odate Cnum Snum
+
+3001 18.69 3-10-1990 2008 1007
+
+3003 767.19 3-10-1990 2001 1001
+
+3002 1900.10 3-10-1990 2007 1004
+
+3005  5160.45 3-10-1990 2003 1002
+
+3006  1098.16 3-10-1990 2008 1007
+
+CREATE TABLE orders
+(
+  onum   integer PRIMARY KEY,
+  amt      DECIMAL,
+  odate   DATE NOT NULL,
+  cnum   INTEGER NOT NULL,
+  snum   INTEGER NOT NULL,
+  constraint  FOREIGN KEY (snum) REFERENCES Salespeople(snum),
+  constraint  FOREIGN KEY (cnum) REFERENCES Customers(cnum)
+);
+INSERT INTO ORDERS VALUES(3001,18.69,'1990-10-03',2008, 1007); 
+INSERT INTO ORDERS VALUES(3003,767.19,'1990-10-03',2001,1001); 
+INSERT INTO ORDERS VALUES(3002,1900.10,'1990-10-03',2007,1004); 
+INSERT INTO ORDERS VALUES(3005,5160.45,'1990-10-03',2003,1002); 
+INSERT INTO ORDERS VALUES(3006,1098.16,'1990-10-03',2008,1007); 
+INSERT INTO ORDERS VALUES(3009,1713.23,'1990-10-04',2002,1003); 
+INSERT INTO ORDERS VALUES(3007,75.75,'1990-10-04',2004,1002); 
+INSERT INTO ORDERS VALUES(3008,4723.00,'1990-10-05',2006,1001); 
+INSERT INTO ORDERS VALUES(3010,309.95,'1990-10-06',2004,1002); 
+INSERT INTO ORDERS VALUES(3011,9891.88,'1990-10-06',2006,1001); 
+
+select * from Orders;
+
+onum	amt	odate	cnum	snum
+3001	19	10/3/1990	2008	1007
+3002	1900	10/3/1990	2007	1004
+3003	767	10/3/1990	2001	1001
+3005	5160	10/3/1990	2003	1002
+3006	1098	10/3/1990	2008	1007
+3007	76	10/4/1990	2004	1002
+3008	4723	10/5/1990	2006	1001
+3009	1713	10/4/1990	2002	1003
+3010	310	10/6/1990	2004	1002
+3011	9892	10/6/1990	2006	1001
+
+1. Count the number of Salesperson whose name begin with ‘a’/’A’.
+Answer:
+SELECT * FROM salespeople WHERE sname LIKE 'a%' OR 'A%' ;
+
+snum	sname	city	comm
+1003	Axelrod	Newyork	0.1
+1005	alrod	Newyork	0.1
+
+2. Display all the Salesperson whose all orders worth is more than Rs. 2000.
+
+Answer:
+
+SELECT *
+FROM orders
+WHERE amt>2000;
+
+onum	amt	odate	cnum	snum
+3005	5160	10/3/1990	2003	1002
+3008	4723	10/5/1990	2006	1001
+3011	9892	10/6/1990	2006	1001
+
+3. Count the number of Salesperson belonging to Newyork.
+Answer:
+
+SELECT 
+    COUNT(*)
+FROM
+    salespeople where city='Newyork';
+    
+    
+    SELECT 
+    sname
+FROM
+    salespeople where city='Newyork';
+
+
+COUNT(*)
+2
+
+sname
+Axelrod
+alrod
+ 
+4. Display the number of Salespeople belonging to London and belonging to Paris.
+Answer:
+
+SELECT *
+FROM
+    salespeople where city='london' union SELECT *
+FROM
+    salespeople where city='paris';
+
+snum	sname	city	comm
+1001	Peel	London	0.12
+1004	Motika	London	0.11
+
+5.Display the number of orders taken by each Salesperson and their date of orders.
+Answer:
+
+SELECT distinct a.snum,a.odate 
+FROM orders a
+ JOIN salespeople b 
+ ON 
+  b.snum = b.snum;
+
+
+snum	odate
+1007	10/3/1990
+1004	10/3/1990
+1001	10/3/1990
+1002	10/3/1990
+1002	10/4/1990
+1001	10/5/1990
+1003	10/4/1990
+1002	10/6/1990
+1001	10/6/1990
+
